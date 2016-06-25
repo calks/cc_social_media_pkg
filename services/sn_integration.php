@@ -1,0 +1,277 @@
+<?php
+
+	class snIntegrationPkgSnIntegrationService extends coreResourceObjectLibrary {
+	
+		protected $settings;
+		protected $domain;
+		protected $return_page_url;
+		protected $client_script_url;
+		protected $error_message;
+		protected $listener_name = 'sn_connect';
+				
+		protected $authorized_network_name;
+		protected $authorized_adaptor;
+				
+		public function getListenerName() {
+			return $this->listener_name;
+		}
+
+		
+		public function getListenerInitCode() {
+			return '
+				<script type="text/javascript">
+					var '.$this->getListenerName().' = new snOAuth();
+				</script>
+			';
+		}		
+		
+		
+		public function getListenerJsUrl() {
+			return Application::getSiteUrl() . coreResourceLibrary::getStaticPath('/js/sn_oauth.js');
+		}
+		
+		protected function buildSettings() {
+			$settings = array(
+				'general' => array(
+					'start_page' => Application::getSiteUrl() . Application::getSeoUrl("/sn_oauth/start"),
+					'return_page' => Application::getSiteUrl() . Application::getSeoUrl("/sn_oauth/return"),
+					'client_script_url' => $this->getListenerJsUrl(),
+					'domain' => Application::getHost(),
+					'page_encoding' => 'utf-8'
+				),
+				
+				'facebook' => array(
+					'application_id' => coreSettingsLibrary::get('sn_integration/facebook_login_application_id'),
+					'application_secret' => coreSettingsLibrary::get('sn_integration/facebook_login_application_secret')
+				),
+				
+				'twitter' => array(
+					'consumer_key' => coreSettingsLibrary::get('sn_integration/twitter_login_consumer_key'),
+					'consumer_secret' => coreSettingsLibrary::get('sn_integration/twitter_login_consumer_secret')
+				),
+				
+				'google' => array(
+					'client_id' => coreSettingsLibrary::get('sn_integration/google_login_client_id'),
+					'client_secret' => coreSettingsLibrary::get('sn_integration/google_login_client_secret'),						
+				)			
+			);
+
+			return $settings;
+		}
+		
+		public function __construct() {
+			
+			$this->settings = $this->buildSettings();						
+			$this->return_page_url = $this->settings['general']['return_page'];
+			$this->client_script_url = $this->settings['general']['client_script_url'];
+
+			$this->restoreState();
+		}
+		
+		
+		public function logout() {
+			if (!$this->isAuthorized()) return;
+			$authorized_adaptor = $this->getAdaptor($this->authorized_network_name);
+			$authorized_adaptor->logout();
+			
+			$this->authorized_adaptor = null;
+			$this->authorized_network_name = null;
+		}
+		
+		
+		public function setErrorMessage($message) {
+			$this->error_message = $message;
+		}
+		
+		public function __destruct() {
+			$this->saveState();
+		}
+		
+		protected function getSessionName() {
+			return "{$this->getName()} Data";
+		}
+		
+		protected function restoreState() {
+			if (!session_id()) session_start();
+			$session_name = $this->getSessionName();
+			
+			$this->authorized_network_name = null;
+			$this->authorized_adaptor = null;
+			
+			if (!isset($_SESSION[$session_name]['authorized_adaptor'])) return;
+			$this->authorized_network_name = $_SESSION[$session_name]['authorized_network_name'];
+			if (!$this->authorized_network_name) return;
+
+						
+			$this->authorized_adaptor = unserialize($_SESSION[$session_name]['authorized_adaptor']);
+			$this->authorized_adaptor->sn_service = $this;
+
+			if (!$this->authorized_adaptor->isUpToDate()) {
+				$this->authorized_network_name = null;
+				$this->authorized_adaptor = null;				
+			}			
+		}
+		
+		
+		protected function saveState() {
+			if (!session_id()) session_start();
+			$session_name = $this->getSessionName();
+			
+			$_SESSION[$session_name] = array(
+				'authorized_network_name' => $this->authorized_network_name,
+				'authorized_adaptor' => serialize($this->authorized_adaptor)
+			);
+			
+		}
+		
+		
+		protected function getSettings($network_name) {
+			return isset($this->settings[$network_name]) ? $this->settings[$network_name] : array(); 
+		}
+		
+		
+		protected function getAdaptor($network_name) {
+			
+			if ($network_name == $this->authorized_network_name) return $this->authorized_adaptor;
+			
+			$adaptor_class = coreResourceLibrary::getEffectiveClass('sn_adaptor', $network_name);
+			
+			if (!$adaptor_class) return null;
+			
+			$settings = $this->getSettings($network_name);
+			$settings['return_url'] = $this->getReturnPageUrl($network_name);
+			
+			$adaptor = new $adaptor_class($settings); 
+			$adaptor->sn_service = $this;
+			return $adaptor;
+		}
+		
+		public function getReturnPageUrl($network_name) {						
+			return $this->return_page_url . '?network_name=' . $network_name;
+		}
+		
+		public function getLogoutUrl() {
+			return $this->return_page_url . '?logout=1';
+		}
+		
+		
+		public function getAuthPopupUrl($network_name) {
+			return Application::getSeoUrl("/sn_oauth/start/$network_name");			
+		}
+		
+		public function getOAuthStartUrl($network_name) {
+			error_reporting(E_ALL);ini_set('display_errors', 1);			
+			$adaptor = $this->getAdaptor($network_name);
+			$adaptor->setListener($this->listener_name);
+			if (!$adaptor) return '';
+			return $adaptor->getOAuthStartUrl();
+		}
+		
+		
+		public function processOauthResponse() {
+			$network_name = isset($_GET['network_name']) ? $_GET['network_name'] : '';		
+			if (!$network_name) die();
+			
+			$listener = isset($_GET['listener']) ? $_GET['listener'] : '';
+			if (!$listener) die();
+
+			$this->authorized_network_name = null;
+			$this->authorized_adaptor = null;
+			
+			$adaptor = $this->getAdaptor($network_name);
+			$adaptor->setListener($listener);
+			$adaptor->handleResponse();
+			
+			$user = null;
+			if ($adaptor->isAuthorized()) {				
+				$this->authorized_network_name = $network_name;
+				$this->authorized_adaptor = $adaptor;
+				$this->saveState();
+			}			
+		}
+		
+		public function renderResponsePage($data=null) {
+			
+			$response = new stdClass();
+			
+			if ($data) {
+				$response->data = $data;
+			}			
+			$listener = isset($_GET['listener']) ? $_GET['listener'] : '';
+			$user = $this->getAuthorizedUserInfo();			
+			if ($user) {
+				$response->status = 'ok';
+				$response->user = clone $user;
+				if ($this->settings['general']['page_encoding'] != 'utf-8') {
+					foreach ($response->user as $k=>$v) {
+						if(is_object($v)) continue;
+						$response->user->$k = iconv($this->settings['general']['page_encoding'], 'UTF-8', $v);										
+					}
+				}
+			}
+			else {
+				$response->status = 'failed';
+				$response->user = null;				
+				$response->error = $this->error_message;
+			}
+			
+			$response = json_encode($response);
+			
+			include 'response_page.php';
+		}
+		
+		public function isAuthorized() {
+			return is_object($this->authorized_adaptor);
+		}
+		
+		public function getAuthorizedUserInfo() {
+			if (!$this->isAuthorized()) return null;
+			
+			$adaptor_user_info = $this->authorized_adaptor->getUserInfo();
+			if (!$adaptor_user_info) {
+				$this->logout();
+				return null;
+			}
+			
+			$user_info = clone $adaptor_user_info;
+			
+			if ($this->settings['general']['page_encoding'] != 'utf-8') {
+				foreach ($user_info as $k=>$v) {
+					if(is_object($v)) continue;
+					$user_info->$k = iconv('UTF-8', $this->settings['general']['page_encoding'], $v);										
+				}
+			}
+			
+			
+			if ($user_info) {
+				$user_info->network_name = $this->authorized_network_name;
+				$user_info->network_displayed_name = $this->authorized_adaptor->getDisplayedName();
+				$user_info->signature = md5($user_info->network_name . 'saLt sTriNg hERE' . $user_info->uid);
+				$user_info->can_post = isset($this->settings[$this->authorized_network_name]['can_post']) ? $this->settings[$this->authorized_network_name]['can_post'] : 0; 
+			}
+			
+			return $user_info;
+		}
+		
+
+		
+		/*public function addPost($message, $name, $link) {
+			if (!$this->isAuthorized()) return null;
+			
+			if ($this->settings['general']['page_encoding'] != 'utf-8') {
+				$message = iconv($this->settings['general']['page_encoding'], 'UTF-8', $message);
+				$name = iconv($this->settings['general']['page_encoding'], 'UTF-8', $name);
+			}			
+			
+			return $this->authorized_adaptor->addPost($message, $name, $link);
+		}
+		
+		public function getLikeButton($network_name, $url) {
+			if ($network_name == 'odnoklassniki') $network_name = 'mailru';
+			$adaptor = $this->getAdaptor($network_name);
+			if (method_exists($adaptor, getLikeButton)) {
+				return $adaptor->getLikeButton($url);
+			}
+			return null;			
+		}*/
+	}
