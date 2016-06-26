@@ -20,6 +20,12 @@
 				'Enable Login via Twitter' => 'Включить вход через Twitter',
 				'Login via Twitter: Consumer Key' => 'Вход через Twitter: Consumer Key',
 				'Login via Twitter: Consumer Secret' => 'Вход через Twitter: Consumer Secret',
+
+				'Enable Login via VK' => 'Включить вход через Вконтакте',
+				'Login via VK: Application ID' => 'Вход через Вконтакте: ID приложения',
+				'Login via VK: Secure key' => 'Вход через Вконтакте: Защищенный ключ',
+			
+			
 			
 			);
 			

@@ -53,7 +53,13 @@
 				'google' => array(
 					'client_id' => coreSettingsLibrary::get('sn_integration/google_login_client_id'),
 					'client_secret' => coreSettingsLibrary::get('sn_integration/google_login_client_secret'),						
+				),
+
+				'vk' => array(
+					'application_id' => coreSettingsLibrary::get('sn_integration/vk_login_application_id'),
+					'secure_key' => coreSettingsLibrary::get('sn_integration/vk_login_secure_key'),						
 				)			
+				
 			);
 
 			return $settings;
