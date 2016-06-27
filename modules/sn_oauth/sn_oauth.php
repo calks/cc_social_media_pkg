@@ -28,7 +28,7 @@
 		}
 		
 
-		protected function taskReturn($params=array()) {;
+		protected function taskReturn($params=array()) {
 				
 			try {
 				$sn = $this->getSnService();
@@ -49,6 +49,15 @@
 					
 		}
 		
+		protected function taskError($params=array()) {
+			$error_message = Request::get('error_messge');
+			$sn = $this->getSnService();
+			if ($error_message) {
+				$sn->setErrorMessage($error_message);
+			}
+			$sn->renderResponsePage($this->getResponsePageData($sn));
+			die();
+		}		
 		
 		protected function getResponsePageData($sn) {
 			return null;

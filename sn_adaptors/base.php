@@ -4,6 +4,7 @@
 		
 		protected $settings;
 		protected $authorized;
+		protected $listener;
 		
 		public $sn_service;
 				
@@ -31,6 +32,7 @@
 			$old_url = preg_replace('/&listener=(?:[a-z0-9\-_]+)/is', '', $old_url);			
 			$new_url = "$old_url&listener=$listener";
 			$this->settings['return_url'] = $new_url; 
+			$this->listener = $listener;
 			return true;
 		}
 		

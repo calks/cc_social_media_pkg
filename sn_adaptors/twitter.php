@@ -120,9 +120,28 @@
 			
 			$response = curl_exec($ch);
 			
+			
 			$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE); 
 			curl_close($ch);						
-			if ($http_code != 200) return '';
+			if ($http_code != 200) {				
+				
+				$response = @json_decode($response);
+				if (isset($response->errors)) {
+					$error_message = array();
+					foreach ($response->errors as $e) {
+						$error_message[] = "$e->code: $e->message";
+					}
+					$error_message = implode(',', $error_message);
+				}
+				else {
+					$error_message = $this->gettext('Failed to obtain oAuth token');
+				}
+				
+				$error_page_params[] = "error_messge=" . rawurlencode($error_message);
+				$error_page_params[] = "listener=" . $this->listener;
+				
+				return Application::getSeoUrl('/sn_oauth/error') . '?' . implode('&', $error_page_params);
+			}
 			
 			$response_nvp = array();
 			parse_str($response, $response_nvp);

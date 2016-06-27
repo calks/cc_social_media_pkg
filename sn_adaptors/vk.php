@@ -17,7 +17,7 @@
 		}
 		
 		public function getDisplayedName() {
-			return "ВКонтакте";
+			return "VK";
 		}
 		
 		public function isUpToDate() {
