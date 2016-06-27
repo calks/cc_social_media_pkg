@@ -1,6 +1,6 @@
 <?php
 
-	abstract class snIntegrationPkgBaseSnAdaptor {
+	abstract class snIntegrationPkgBaseSnAdaptor extends coreResourceObjectLibrary {
 		
 		protected $settings;
 		protected $authorized;
@@ -36,8 +36,6 @@
 			return true;
 		}
 		
-		/*abstract public function query($api_method, $params);*/
-		
 		abstract public function getUserInfo();
 		
 		abstract public function getOAuthStartUrl();
@@ -45,6 +43,15 @@
 		abstract public function getDisplayedName();
 		
 		abstract public function handleResponse();
+		
+		public function isLoginViaEnabled() {
+			$setteing_param_name = $this->getResourceName() . '_login_enabled';
+			return coreSettingsLibrary::get("sn_integration/$setteing_param_name");
+		}
+		
+		public function getAuthPopupUrl() {
+			return $this->sn_service->getAuthPopupUrl($this->getResourceName());
+		}
 		
 		public function addPost($message, $name, $link) {}
 	}

@@ -8,10 +8,15 @@
 		
 		protected $user_object;
 		
+		protected $application_id;
+		protected $application_secret;
+		
 		protected static $sdk_code_placed = false;		
 		
 		public function __construct($settings) {			
 			parent::__construct($settings);
+			$this->application_id = coreSettingsLibrary::get('sn_integration/facebook_login_application_id');
+			$this->application_secret = coreSettingsLibrary::get('sn_integration/facebook_login_application_secret');
 		}
 		
 		public function getDisplayedName() {
@@ -19,7 +24,7 @@
 		}
 		
 		public function getOAuthStartUrl() {
-			$params[] ='client_id=' . $this->settings['application_id'];
+			$params[] ='client_id=' . $this->application_id;
 			$params[] ='redirect_uri=' . urlencode($this->settings['return_url']);
 			$params[] ='display=popup';
 			$params[] ='scope=email,public_profile';
@@ -29,8 +34,8 @@
 		
 		protected function obtainToken($code) {
 						
-			$params[] ='client_id=' . $this->settings['application_id'];
-			$params[] ='client_secret=' . $this->settings['application_secret'];
+			$params[] ='client_id=' . $this->application_id;
+			$params[] ='client_secret=' . $this->application_secret;
 			$params[] ='redirect_uri=' . urlencode($this->settings['return_url']);
 			$params[] ='code=' . urlencode($code);  
 				

@@ -15,7 +15,6 @@
 		public function getListenerName() {
 			return $this->listener_name;
 		}
-
 		
 		public function getListenerInitCode() {
 			return '
@@ -23,8 +22,7 @@
 					var '.$this->getListenerName().' = new snOAuth();
 				</script>
 			';
-		}		
-		
+		}	
 		
 		public function getListenerJsUrl() {
 			return Application::getSiteUrl() . coreResourceLibrary::getStaticPath('/js/sn_oauth.js');
@@ -38,28 +36,7 @@
 					'client_script_url' => $this->getListenerJsUrl(),
 					'domain' => Application::getHost(),
 					'page_encoding' => 'utf-8'
-				),
-				
-				'facebook' => array(
-					'application_id' => coreSettingsLibrary::get('sn_integration/facebook_login_application_id'),
-					'application_secret' => coreSettingsLibrary::get('sn_integration/facebook_login_application_secret')
-				),
-				
-				'twitter' => array(
-					'consumer_key' => coreSettingsLibrary::get('sn_integration/twitter_login_consumer_key'),
-					'consumer_secret' => coreSettingsLibrary::get('sn_integration/twitter_login_consumer_secret')
-				),
-				
-				'google' => array(
-					'client_id' => coreSettingsLibrary::get('sn_integration/google_login_client_id'),
-					'client_secret' => coreSettingsLibrary::get('sn_integration/google_login_client_secret'),						
-				),
-
-				'vk' => array(
-					'application_id' => coreSettingsLibrary::get('sn_integration/vk_login_application_id'),
-					'secure_key' => coreSettingsLibrary::get('sn_integration/vk_login_secure_key'),						
-				)			
-				
+				)				
 			);
 
 			return $settings;
@@ -166,7 +143,6 @@
 		}
 		
 		public function getOAuthStartUrl($network_name) {
-			error_reporting(E_ALL);ini_set('display_errors', 1);			
 			$adaptor = $this->getAdaptor($network_name);
 			$adaptor->setListener($this->listener_name);
 			if (!$adaptor) return '';
@@ -257,6 +233,25 @@
 			}
 			
 			return $user_info;
+		}
+		
+		
+		public function getLoginViaEnabledAdaptors() {
+			$networks = coreResourceLibrary::findEffective('sn_adaptor');
+			
+			$out = array();
+			
+			foreach ($networks as $network_name=>$resource_data) {
+				if($network_name == 'base') continue;				
+				$adaptor = $this->getAdaptor($network_name);
+				if ($adaptor->isLoginViaEnabled()) {
+					$out[$network_name] = $adaptor;
+				}
+			}
+			
+			return $out;
+					
+		
 		}
 		
 

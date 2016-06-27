@@ -12,8 +12,15 @@
 		
 		protected static $sdk_code_placed = false;
 		
+		protected $client_id;
+		protected $client_secret;
+		
+		
+		
 		public function __construct($settings) {			
 			parent::__construct($settings);	
+			$this->client_id = coreSettingsLibrary::get('sn_integration/google_login_client_id');
+			$this->client_secret = coreSettingsLibrary::get('sn_integration/google_login_client_secret');
 		}
 		
 		public function getDisplayedName() {
@@ -104,8 +111,8 @@
 					'https://www.googleapis.com/auth/userinfo.profile'			
 				));
 
-			    self::$api_client->setClientId(trim($this->settings['client_id']));
-			    self::$api_client->setClientSecret(trim($this->settings['client_secret']));
+			    self::$api_client->setClientId(trim($this->client_id));
+			    self::$api_client->setClientSecret(trim($this->client_secret));
 			    self::$api_client->setRedirectUri($this->settings['return_url']);
 			}
 			

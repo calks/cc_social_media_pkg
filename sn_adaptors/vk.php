@@ -10,10 +10,15 @@
 		
 		protected $user_object;
 		
+		protected $application_id;
+		protected $secure_key;
+		
 		protected static $sdk_code_placed = false;
 		
 		public function __construct($settings) {			
-			parent::__construct($settings);			
+			parent::__construct($settings);	
+			$this->application_id = coreSettingsLibrary::get('sn_integration/vk_login_application_id');
+			$this->secure_key = coreSettingsLibrary::get('sn_integration/vk_login_secure_key');		
 		}
 		
 		public function getDisplayedName() {
@@ -26,7 +31,7 @@
 		}
 		
 		public function getOAuthStartUrl() {
-			$params[] = 'client_id=' . $this->settings['application_id'];
+			$params[] = 'client_id=' . $this->application_id;
 			$params[] = 'display=popup';
 			$params[] = 'response_type=code';
 			$params[] = 'redirect_uri=' . urlencode($this->settings['return_url']);
@@ -39,8 +44,8 @@
 		
 		protected function obtainToken($code) {
 						
-			$params[] = 'client_id=' . $this->settings['application_id'];
-			$params[] = 'client_secret=' . $this->settings['secure_key'];
+			$params[] = 'client_id=' . $this->application_id;
+			$params[] = 'client_secret=' . $this->secure_key;
 			$params[] = 'redirect_uri=' . urlencode($this->settings['return_url']);			
 			$params[] = 'code=' . urlencode($code);  
 						
@@ -152,7 +157,7 @@
 		public function getLikeButton($url) {
 			$out = "";
 			if (!self::$sdk_code_placed) {
-				$app_id = $this->settings['application_id'];			
+				$app_id = $this->application_id;			
 				$out .= '
 					<script type="text/javascript" src="http://userapi.com/js/api/openapi.js?49"></script>
 

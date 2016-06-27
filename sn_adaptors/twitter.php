@@ -9,10 +9,15 @@
 		
 		protected $user_object;
 		
+		protected $consumer_key;
+		protected $consumer_secret; 
+		
 		protected static $sdk_code_placed = false;
 		
 		public function __construct($settings) {			
-			parent::__construct($settings);			
+			parent::__construct($settings);	
+			$this->consumer_key = coreSettingsLibrary::get('sn_integration/twitter_login_consumer_key');
+			$this->consumer_secret = coreSettingsLibrary::get('sn_integration/twitter_login_consumer_secret');		
 		}
 		
 		public function getDisplayedName() {
@@ -46,28 +51,21 @@
 			$params_encoded = implode('&', $params_encoded);			
 						
 			$base_string = strtoupper($method) . '&' . rawurlencode($base_url) . '&' . rawurlencode($params_encoded);
-			$signing_key = rawurlencode($this->settings['consumer_secret']) . '&' . rawurlencode($this->oauth_token_secret);
+			$signing_key = rawurlencode($this->consumer_secret) . '&' . rawurlencode($this->oauth_token_secret);
 			
 			$signature = base64_encode(hash_hmac('sha1', $base_string, $signing_key, true));
 
 			return $signature;
 		}
 		
-		protected function getAuthorizationHeader($method, $url, $data=array(), $include_oauth_callback = false, $test=false) {
+		protected function getAuthorizationHeader($method, $url, $data=array(), $include_oauth_callback = false) {
 			
-			$header_data['oauth_consumer_key'] = $this->settings['consumer_key'];
+			$header_data['oauth_consumer_key'] = $this->consumer_key;
 			$header_data['oauth_nonce'] = md5(uniqid());
 			$header_data['oauth_signature_method'] = 'HMAC-SHA1';
 			$header_data['oauth_timestamp'] = time();
 			$header_data['oauth_version'] = '1.0';
 			
-			if ($test) {
-				$header_data['oauth_nonce'] = '99bc1533081193899210f449979f2d51';
-				$header_data['oauth_timestamp'] = '1459177010';
-				$this->oauth_token = '485750895-eEjFYyDaM2zhLGMzqLEJKHPOJODFOa0dNTGoSH2u';	
-				$this->settings['consumer_secret'] = 'gNCL7yx6VncQGgFGXXziNvjWuHO5aVzNqEsQPXcC7AUQSjD8Up';		
-			}
-
 			/*
 			 * From Twitter Dev Docs:
 			 * (https://dev.twitter.com/oauth/reference/post/oauth/request_token)

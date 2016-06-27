@@ -2,9 +2,8 @@
 	snOAuth = function() {
 		this.user = null;
 		this.popup = null;
-		this.link_classname = 'sn-oauth-popup';
-		this.authorize_links = this.getLinks();		
-		this.bindClick(this.authorize_links);		
+		this.link_classname = 'sn-oauth-popup';				
+		this.bindClick();	
 		
 	}
 	
@@ -78,7 +77,9 @@
 		return false;
 	}
 	
-	snOAuth.prototype.bindClick = function(links) {
+	snOAuth.prototype.bindClick = function() {
+		var links = this.getLinks();
+		
 		var links_count = links.length;		
 		if (links_count == 0) return;
 		var me=this;
