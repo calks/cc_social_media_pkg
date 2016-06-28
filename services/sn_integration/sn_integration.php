@@ -11,7 +11,12 @@
 				
 		protected $authorized_network_name;
 		protected $authorized_adaptor;
-				
+
+		
+		public function getSocialAccountsTable() {
+			return 'user_social_accounts';
+		}
+		
 		public function getListenerName() {
 			return $this->listener_name;
 		}
@@ -252,6 +257,53 @@
 			return $out;
 					
 		
+		}
+		
+
+		public function addNetworkForSiteUser($user_id, $network_name, $network_uid, $profile_link) {
+			$db = Application::getDb();								
+			$coupling_table = $this->getSocialAccountsTable(); 
+			
+			$user_id = (int)$user_id;
+			$network_name = addslashes($network_name);
+			$network_uid = addslashes($network_uid);
+			$profile_link = addslashes($profile_link);
+			
+			$db->execute("
+				INSERT INTO $coupling_table (
+					user_id,
+					social_network_name,
+					uid,
+					profile_link
+				) VALUES (
+					$user_id,
+					'$network_name',
+					'$network_uid',
+					'$profile_link'
+				)
+			");
+				
+		}
+		
+		
+		public function findSiteUser($network_name, $network_uid) {
+			$db = Application::getDb();
+			
+			$network_name = addslashes($network_name);
+			$network_uid = addslashes($network_uid);
+			$user = Application::getEntityInstance('user');
+			$coupling_table = $this->getSocialAccountsTable(); 
+			$existing_user_id = $db->executeScalar("
+				SELECT user_id
+				FROM $coupling_table
+				WHERE
+					social_network_name = '$network_name' and
+					uid = '$network_uid'	
+			");
+			
+			if (!$existing_user_id) return null;
+			
+			return $user->load($existing_user_id);		
 		}
 		
 
