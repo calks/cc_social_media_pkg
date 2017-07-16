@@ -1,7 +1,7 @@
 <?php
 
 	
-	class snIntegrationPkgVkSnAdaptor extends snIntegrationPkgBaseSnAdaptor {
+	class socialMediaPkgVkSnAdaptor extends socialMediaPkgBaseSnAdaptor {
 		protected $access_token;
 		protected $token_created;
 		protected $expires_in;

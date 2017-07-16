@@ -1,6 +1,6 @@
 <?php
 
-	class snIntegrationPkgFacebookSnAdaptor extends snIntegrationPkgBaseSnAdaptor {
+	class socialMediaPkgFacebookSnAdaptor extends socialMediaPkgBaseSnAdaptor {
 		protected $access_token;
 		protected $token_created;
 		protected $expires_in;

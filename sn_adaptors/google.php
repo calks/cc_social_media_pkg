@@ -4,7 +4,7 @@
 	require_once Application::getSitePath() . '/vendor/autoload.php';
 	
 	
-	class snIntegrationPkgGoogleSnAdaptor extends snIntegrationPkgBaseSnAdaptor {
+	class socialMediaPkgGoogleSnAdaptor extends socialMediaPkgBaseSnAdaptor {
 		protected $access_token;
 				
 		protected $user_object;

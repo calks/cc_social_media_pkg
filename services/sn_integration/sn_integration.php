@@ -1,6 +1,6 @@
 <?php
 
-	class snIntegrationPkgSnIntegrationService extends coreResourceObjectLibrary {
+	class socialMediaPkgSnIntegrationService extends coreResourceObjectLibrary {
 	
 		protected $settings;
 		protected $domain;

@@ -1,6 +1,6 @@
 <?php
 
-	class snIntegrationPkgSnIntegrationSettingGroup extends coreBaseSettingGroup {
+	class socialMediaPkgSnIntegrationSettingGroup extends coreBaseSettingGroup {
 		
 		public function getGroupNames() {
 			return array(

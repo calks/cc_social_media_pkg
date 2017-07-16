@@ -1,5 +1,5 @@
 <?php
 
-	class snIntegrationPkgSnIntegrationSettingGroupRuTranslation extends snIntegrationPkgRuTranslation {
+	class socialMediaPkgSnIntegrationSettingGroupRuTranslation extends socialMediaPkgRuTranslation {
 	
 	}

@@ -1,6 +1,6 @@
 <?php
 
-	class snIntegrationPkgsnIntegrationFacebookSettingGroup extends snIntegrationPkgSnIntegrationSettingGroup {
+	class socialMediaPkgsnIntegrationFacebookSettingGroup extends socialMediaPkgSnIntegrationSettingGroup {
 	
 	
 		public function getParamsTree() {

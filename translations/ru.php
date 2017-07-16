@@ -1,6 +1,6 @@
 <?php
 
-	class snIntegrationPkgRuTranslation extends langPkgRuTranslation {
+	class socialMediaPkgRuTranslation extends langPkgRuTranslation {
 	
 		public function getTranslations() {
 		

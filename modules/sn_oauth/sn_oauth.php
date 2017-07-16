@@ -1,6 +1,6 @@
 <?php
 
-	class snIntegrationPkgSnOauthModule extends coreBaseModule {
+	class socialMediaPkgSnOauthModule extends coreBaseModule {
 		
 		protected function getSnService() {
 			$sn_service_class = coreResourceLibrary::getEffectiveClass('service', 'sn_integration');

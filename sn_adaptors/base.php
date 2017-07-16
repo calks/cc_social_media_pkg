@@ -1,6 +1,6 @@
 <?php
 
-	abstract class snIntegrationPkgBaseSnAdaptor extends coreResourceObjectLibrary {
+	abstract class socialMediaPkgBaseSnAdaptor extends coreResourceObjectLibrary {
 		
 		protected $settings;
 		protected $authorized;

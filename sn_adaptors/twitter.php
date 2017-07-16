@@ -1,7 +1,7 @@
 <?php
 
 	
-	class snIntegrationPkgTwitterSnAdaptor extends snIntegrationPkgBaseSnAdaptor {
+	class socialMediaPkgTwitterSnAdaptor extends socialMediaPkgBaseSnAdaptor {
 		protected $oauth_token;
 		protected $oauth_token_secret;		
 		protected $user_id;
