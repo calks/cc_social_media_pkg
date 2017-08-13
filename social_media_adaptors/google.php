@@ -4,7 +4,7 @@
 	require_once Application::getSitePath() . '/vendor/autoload.php';
 	
 	
-	class socialMediaPkgGoogleSnAdaptor extends socialMediaPkgBaseSnAdaptor {
+	class socialMediaPkgGoogleSocialMediaAdaptor extends socialMediaPkgBaseSocialMediaAdaptor {
 		protected $access_token;
 				
 		protected $user_object;
@@ -19,8 +19,8 @@
 		
 		public function __construct($settings) {			
 			parent::__construct($settings);	
-			$this->client_id = coreSettingsLibrary::get('sn_integration/google_login_client_id');
-			$this->client_secret = coreSettingsLibrary::get('sn_integration/google_login_client_secret');
+			$this->client_id = coreSettingsLibrary::get('social_media/google_login_client_id');
+			$this->client_secret = coreSettingsLibrary::get('social_media/google_login_client_secret');
 		}
 		
 		public function getDisplayedName() {
@@ -46,7 +46,7 @@
 					$this->access_token = $client->getAccessToken();
 				}
 				catch (Exception $e) {
-					$this->sn_service->setErrorMessage($e->getMessage());
+					$this->social_media_service->setErrorMessage($e->getMessage());
 				}
 				
 				$this->authorized = !empty($this->access_token);
@@ -88,7 +88,7 @@
 				}
 				catch (Exception $e) {
 					$error = $e->getMessage();					
-					$this->sn_service->setErrorMessage($error);
+					$this->social_media_service->setErrorMessage($error);
 					$this->user_object = null;
 				}
 			

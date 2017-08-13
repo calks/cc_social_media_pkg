@@ -1,13 +1,13 @@
 <?php
 
-	class socialMediaPkgSnIntegrationService extends coreResourceObjectLibrary {
+	class socialMediaPkgSocialMediaService extends coreResourceObjectLibrary {
 	
 		protected $settings;
 		protected $domain;
 		protected $return_page_url;
 		protected $client_script_url;
 		protected $error_message;
-		protected $listener_name = 'sn_connect';
+		protected $listener_name = 'social_media_connect';
 				
 		protected $authorized_network_name;
 		protected $authorized_adaptor;
@@ -24,20 +24,20 @@
 		public function getListenerInitCode() {
 			return '
 				<script type="text/javascript">
-					var '.$this->getListenerName().' = new snOAuth();
+					var '.$this->getListenerName().' = new SocialMediaOAuth();
 				</script>
 			';
 		}	
 		
 		public function getListenerJsUrl() {
-			return Application::getSiteUrl() . coreResourceLibrary::getStaticPath('/js/sn_oauth.js');
+			return Application::getSiteUrl() . coreResourceLibrary::getStaticPath('/js/social_media_oauth.js');
 		}
 		
 		protected function buildSettings() {
 			$settings = array(
 				'general' => array(
-					'start_page' => Application::getSiteUrl() . Application::getSeoUrl("/sn_oauth/start"),
-					'return_page' => Application::getSiteUrl() . Application::getSeoUrl("/sn_oauth/return"),
+					'start_page' => Application::getSiteUrl() . Application::getSeoUrl("/social_media_oauth/start"),
+					'return_page' => Application::getSiteUrl() . Application::getSeoUrl("/social_media_oauth/return"),
 					'client_script_url' => $this->getListenerJsUrl(),
 					'domain' => Application::getHost(),
 					'page_encoding' => 'utf-8'
@@ -92,7 +92,7 @@
 
 						
 			$this->authorized_adaptor = unserialize($_SESSION[$session_name]['authorized_adaptor']);
-			$this->authorized_adaptor->sn_service = $this;
+			$this->authorized_adaptor->social_media_service = $this;
 
 			if (!$this->authorized_adaptor->isUpToDate()) {
 				$this->authorized_network_name = null;
@@ -122,7 +122,7 @@
 			
 			if ($network_name == $this->authorized_network_name) return $this->authorized_adaptor;
 			
-			$adaptor_class = coreResourceLibrary::getEffectiveClass('sn_adaptor', $network_name);
+			$adaptor_class = coreResourceLibrary::getEffectiveClass('social_media_adaptor', $network_name);
 			
 			if (!$adaptor_class) return null;
 			
@@ -130,7 +130,7 @@
 			$settings['return_url'] = $this->getReturnPageUrl($network_name);
 			
 			$adaptor = new $adaptor_class($settings); 
-			$adaptor->sn_service = $this;
+			$adaptor->social_media_service = $this;
 			return $adaptor;
 		}
 		
@@ -144,7 +144,7 @@
 		
 		
 		public function getAuthPopupUrl($network_name) {
-			return Application::getSeoUrl("/sn_oauth/start/$network_name");			
+			return Application::getSeoUrl("/social_media_oauth/start/$network_name");			
 		}
 		
 		public function getOAuthStartUrl($network_name) {
@@ -242,16 +242,19 @@
 		
 		
 		public function getLoginViaEnabledAdaptors() {
-			$networks = coreResourceLibrary::findEffective('sn_adaptor');
+			$networks = coreResourceLibrary::findEffective('social_media_adaptor');
 			
 			$out = array();
 			
 			foreach ($networks as $network_name=>$resource_data) {
 				if($network_name == 'base') continue;				
 				$adaptor = $this->getAdaptor($network_name);
+				echo "$network_name ";
 				if ($adaptor->isLoginViaEnabled()) {
+					echo "enabled";
 					$out[$network_name] = $adaptor;
 				}
+				echo "\n";
 			}
 			
 			return $out;

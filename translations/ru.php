@@ -7,7 +7,7 @@
 			$parent_translations = parent::getTranslations();
 			
 			$translations = array(
-				'Social networks integration' => 'Интеграция с социальными сетями',
+				'Social media integration' => 'Интеграция с социальными сетями',
 				
 				'Enable Login via Google' => 'Включить вход через Google',
 				'Login via Google: Client ID' => 'Вход через Google: Client ID',

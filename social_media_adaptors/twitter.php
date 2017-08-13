@@ -1,7 +1,7 @@
 <?php
 
 	
-	class socialMediaPkgTwitterSnAdaptor extends socialMediaPkgBaseSnAdaptor {
+	class socialMediaPkgTwitterSocialMediaAdaptor extends socialMediaPkgBaseSocialMediaAdaptor {
 		protected $oauth_token;
 		protected $oauth_token_secret;		
 		protected $user_id;
@@ -16,8 +16,8 @@
 		
 		public function __construct($settings) {			
 			parent::__construct($settings);	
-			$this->consumer_key = coreSettingsLibrary::get('sn_integration/twitter_login_consumer_key');
-			$this->consumer_secret = coreSettingsLibrary::get('sn_integration/twitter_login_consumer_secret');		
+			$this->consumer_key = coreSettingsLibrary::get('social_media/twitter_login_consumer_key');
+			$this->consumer_secret = coreSettingsLibrary::get('social_media/twitter_login_consumer_secret');		
 		}
 		
 		public function getDisplayedName() {
@@ -138,7 +138,7 @@
 				$error_page_params[] = "error_messge=" . rawurlencode($error_message);
 				$error_page_params[] = "listener=" . $this->listener;
 				
-				return Application::getSeoUrl('/sn_oauth/error') . '?' . implode('&', $error_page_params);
+				return Application::getSeoUrl('/social_media_oauth/error') . '?' . implode('&', $error_page_params);
 			}
 			
 			$response_nvp = array();

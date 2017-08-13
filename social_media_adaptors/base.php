@@ -1,12 +1,12 @@
 <?php
 
-	abstract class socialMediaPkgBaseSnAdaptor extends coreResourceObjectLibrary {
+	abstract class socialMediaPkgBaseSocialMediaAdaptor extends coreResourceObjectLibrary {
 		
 		protected $settings;
 		protected $authorized;
 		protected $listener;
 		
-		public $sn_service;
+		public $social_media_service;
 				
 		
 		public function __construct(array $settings) {
@@ -46,11 +46,12 @@
 		
 		public function isLoginViaEnabled() {
 			$setteing_param_name = $this->getResourceName() . '_login_enabled';
-			return coreSettingsLibrary::get("sn_integration/$setteing_param_name");
+			echo " $setteing_param_name " . coreSettingsLibrary::get("social_media/$setteing_param_name") . ' ';  
+			return coreSettingsLibrary::get("social_media/$setteing_param_name");
 		}
 		
 		public function getAuthPopupUrl() {
-			return $this->sn_service->getAuthPopupUrl($this->getResourceName());
+			return $this->social_media_service->getAuthPopupUrl($this->getResourceName());
 		}
 		
 		public function addPost($message, $name, $link) {}

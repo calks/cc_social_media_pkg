@@ -1,6 +1,6 @@
 <?php
 
-	class socialMediaPkgFacebookSnAdaptor extends socialMediaPkgBaseSnAdaptor {
+	class socialMediaPkgFacebookSocialMediaAdaptor extends socialMediaPkgBaseSocialMediaAdaptor {
 		protected $access_token;
 		protected $token_created;
 		protected $expires_in;
@@ -15,8 +15,8 @@
 		
 		public function __construct($settings) {			
 			parent::__construct($settings);
-			$this->application_id = coreSettingsLibrary::get('sn_integration/facebook_login_application_id');
-			$this->application_secret = coreSettingsLibrary::get('sn_integration/facebook_login_application_secret');
+			$this->application_id = coreSettingsLibrary::get('social_media/facebook_login_application_id');
+			$this->application_secret = coreSettingsLibrary::get('social_media/facebook_login_application_secret');
 		}
 		
 		public function getDisplayedName() {

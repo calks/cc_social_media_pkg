@@ -1,18 +1,18 @@
 
-	snOAuth = function() {
+	SocialMediaOAuth = function() {
 		this.user = null;
 		this.popup = null;
-		this.link_classname = 'sn-oauth-popup';				
+		this.link_classname = 'social-media-oauth-popup';				
 		this.bindClick();	
 		
 	}
 	
 
-	snOAuth.prototype.setResponseCallback = function(response_callback) {
+	SocialMediaOAuth.prototype.setResponseCallback = function(response_callback) {
 		this.response_callback = response_callback;
 	}
 	
-	snOAuth.prototype.getLinks = function() {
+	SocialMediaOAuth.prototype.getLinks = function() {
 		
 		classname = this.link_classname;
 		
@@ -36,14 +36,14 @@
 	}
 	
 	
-	snOAuth.prototype.closePopup = function() {
+	SocialMediaOAuth.prototype.closePopup = function() {
 		if (!this.popup) return;
 		this.popup.close();
 		this.popup = null;
 	}
 	
 	
-	snOAuth.prototype.openPopup = function(link) {
+	SocialMediaOAuth.prototype.openPopup = function(link) {
 		
 		this.closePopup();
 		
@@ -72,12 +72,12 @@
 		return true;
 	}
 	
-	snOAuth.prototype.clickHandler = function(link) {
+	SocialMediaOAuth.prototype.clickHandler = function(link) {
 		if (!this.openPopup(link.href)) return false;
 		return false;
 	}
 	
-	snOAuth.prototype.bindClick = function() {
+	SocialMediaOAuth.prototype.bindClick = function() {
 		var links = this.getLinks();
 		
 		var links_count = links.length;		
@@ -97,7 +97,7 @@
 	}
 	
 	
-	snOAuth.prototype.responseListener = function(response) {
+	SocialMediaOAuth.prototype.responseListener = function(response) {
 		if (typeof (this.response_callback) == 'function') this.response_callback(response);
 	}
 	

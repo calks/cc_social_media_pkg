@@ -1,6 +1,6 @@
 <?php
 
-	class socialMediaPkgsnIntegrationVkSettingGroup extends socialMediaPkgSnIntegrationSettingGroup {
+	class socialMediaPkgSocialMediaVkSettingGroup extends socialMediaPkgSocialMediaSettingGroup {
 	
 	
 		public function getParamsTree() {
@@ -24,7 +24,7 @@
 							
 			);
 			
-			return array('sn_integration' => $out);
+			return array('social_media' => $out);
 		}
 		
 	}

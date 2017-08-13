@@ -1,7 +1,7 @@
 <?php
 
 	
-	class socialMediaPkgVkSnAdaptor extends socialMediaPkgBaseSnAdaptor {
+	class socialMediaPkgVkSocialMediaAdaptor extends socialMediaPkgBaseSocialMediaAdaptor {
 		protected $access_token;
 		protected $token_created;
 		protected $expires_in;
@@ -17,8 +17,8 @@
 		
 		public function __construct($settings) {			
 			parent::__construct($settings);	
-			$this->application_id = coreSettingsLibrary::get('sn_integration/vk_login_application_id');
-			$this->secure_key = coreSettingsLibrary::get('sn_integration/vk_login_secure_key');		
+			$this->application_id = coreSettingsLibrary::get('social_media/vk_login_application_id');
+			$this->secure_key = coreSettingsLibrary::get('social_media/vk_login_secure_key');		
 		}
 		
 		public function getDisplayedName() {
@@ -63,7 +63,7 @@
 			curl_close($ch);
 			
 			if (!$response) {
-				$this->sn_service->setErrorMessage($this->gettext('Empty response on token request'));
+				$this->social_media_service->setErrorMessage($this->gettext('Empty response on token request'));
 				return false;
 			}
 			
@@ -75,7 +75,7 @@
 				if ($error_description) {
 					$error .= ': ' . $error_description;
 				}
-				$this->sn_service->setErrorMessage($error);
+				$this->social_media_service->setErrorMessage($error);
 			} 
 			
 			if (!isset($response->access_token)) return false;
