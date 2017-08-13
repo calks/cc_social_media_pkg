@@ -12,7 +12,7 @@
 					'type' => 'checkbox',
 					'displayed_name' => $this->gettext('Enable Login via Twitter')
 				),
-				'twitter_login_consumer_key2' => array(
+				'twitter_login_consumer_key' => array(
 					'type' => 'string',
 					'displayed_name' => $this->gettext('Login via Twitter: Consumer Key')
 				),				

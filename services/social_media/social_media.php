@@ -246,15 +246,12 @@
 			
 			$out = array();
 			
-			foreach ($networks as $network_name=>$resource_data) {
-				if($network_name == 'base') continue;				
+			foreach ($networks as $network_name=>$resource_data) {				
+				if($network_name == 'base') continue;
 				$adaptor = $this->getAdaptor($network_name);
-				echo "$network_name ";
 				if ($adaptor->isLoginViaEnabled()) {
-					echo "enabled";
 					$out[$network_name] = $adaptor;
 				}
-				echo "\n";
 			}
 			
 			return $out;

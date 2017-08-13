@@ -45,9 +45,8 @@
 		abstract public function handleResponse();
 		
 		public function isLoginViaEnabled() {
-			$setteing_param_name = $this->getResourceName() . '_login_enabled';
-			echo " $setteing_param_name " . coreSettingsLibrary::get("social_media/$setteing_param_name") . ' ';  
-			return coreSettingsLibrary::get("social_media/$setteing_param_name");
+			$setting_param_name = $this->getResourceName() . '_login_enabled';
+			return coreSettingsLibrary::get("social_media/$setting_param_name");
 		}
 		
 		public function getAuthPopupUrl() {
