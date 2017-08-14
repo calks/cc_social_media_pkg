@@ -43,7 +43,7 @@
 	}
 	
 	
-	SocialMediaOAuth.prototype.openPopup = function(link) {
+	SocialMediaOAuth.prototype.openPopup = function(url) {
 		
 		this.closePopup();
 		
@@ -61,7 +61,7 @@
 		popup_params = popup_params + ',left=' + popup_left;
 		popup_params = popup_params + ',top=' + popup_top;
 		
-		this.popup = window.open(link, '_blank', popup_params);
+		this.popup = window.open(url, '_blank', popup_params);
 		
 		if (!this.popup) {
 			App.displayMessage('warning', 'Please disable popup blockers');
