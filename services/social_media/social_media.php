@@ -306,6 +306,46 @@
 			return $user->load($existing_user_id);		
 		}
 		
+		
+		public function loadInfoForSiteUsers($user_list, $field_name='social_media_accounts') {
+			if (!$user_list) return;
+						
+			$mapping = array();
+			foreach ($user_list as $user) {
+				$user->$field_name=array();
+				$mapping[$user->id] = $user;
+			}
+			
+			$db = Application::getDb();
+			$coupling_table = $this->getSocialAccountsTable();
+				
+			$user_ids = implode(',', array_keys($mapping));
+
+			$sql = "
+				SELECT 
+					*
+				FROM 
+					`$coupling_table`
+				WHERE
+					user_id IN($user_ids)			
+			";
+			
+			$data = $db->executeSelectAllObjects($sql);
+			
+			$network_names = array();
+			
+			foreach ($data as $d) {
+				if (!isset($network_names[$d->social_network_name])) {
+					$adaptor = $this->getAdaptor($d->social_network_name);
+					$network_names[$d->social_network_name] = $adaptor->getDisplayedName();
+				}
+				$d->social_network_displayed_name = $network_names[$d->social_network_name]; 
+				$accounts_list = &$mapping[$d->user_id]->$field_name;
+				$accounts_list[] = $d; 
+			}						
+			
+			
+		}
 
 		
 		/*public function addPost($message, $name, $link) {

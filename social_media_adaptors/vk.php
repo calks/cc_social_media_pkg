@@ -141,7 +141,7 @@
 				$user->firstname = $response->first_name;
 				$user->lastname = $response->last_name;
 				$user->avatar = $response->photo_big;
-				$user->profile_url = "http://vkontakte.ru/id{$user->uid}";
+				$user->profile_url = "https://vk.com/id{$user->uid}";
 				$user->email = $this->user_email;
 				
 				$this->user_object = $user;
